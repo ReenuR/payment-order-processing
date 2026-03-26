@@ -36,6 +36,9 @@ build/
 .idea/
 *.iml
 *.iws
+application-local.properties
+*.env
+.env
 
 # Mac
 .DS_Store
