@@ -1,4 +1,4 @@
-package enums;
+package com.payments.payment_order_processing.enums;
 
 public enum PaymentType {
     CREDIT_CARD("Credit card"),

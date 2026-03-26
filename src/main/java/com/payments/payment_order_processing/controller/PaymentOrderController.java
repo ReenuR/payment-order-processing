@@ -1,13 +1,13 @@
-package controller;
+package com.payments.payment_order_processing.controller;
 
-import dto.PaymentRequestDTO;
-import dto.PaymentResponseDTO;
+import com.payments.payment_order_processing.dto.PaymentRequestDTO;
+import com.payments.payment_order_processing.dto.PaymentResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import service.PaymentOrderService;
+import com.payments.payment_order_processing.service.PaymentOrderService;
 
 @RestController
 @RequestMapping("/api/v1")

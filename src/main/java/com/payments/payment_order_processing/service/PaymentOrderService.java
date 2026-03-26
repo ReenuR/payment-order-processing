@@ -1,11 +1,11 @@
-package service;
+package com.payments.payment_order_processing.service;
 
-import dto.PaymentRequestDTO;
-import dto.PaymentResponseDTO;
-import entity.PaymentOrder;
-import enums.PaymentStatus;
+import com.payments.payment_order_processing.dto.PaymentRequestDTO;
+import com.payments.payment_order_processing.dto.PaymentResponseDTO;
+import com.payments.payment_order_processing.entity.PaymentOrder;
+import com.payments.payment_order_processing.enums.PaymentStatus;
 import org.springframework.stereotype.Service;
-import repository.PaymentOrderRepository;
+import com.payments.payment_order_processing.repository.PaymentOrderRepository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

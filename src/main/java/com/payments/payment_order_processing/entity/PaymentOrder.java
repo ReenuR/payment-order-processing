@@ -1,7 +1,7 @@
-package entity;
+package com.payments.payment_order_processing.entity;
 
-import enums.PaymentStatus;
-import enums.PaymentType;
+import com.payments.payment_order_processing.enums.PaymentStatus;
+import com.payments.payment_order_processing.enums.PaymentType;
 import jakarta.persistence.*;
 import lombok.Data;
 

@@ -1,6 +1,6 @@
-package dto;
+package com.payments.payment_order_processing.dto;
 
-import enums.PaymentStatus;
+import com.payments.payment_order_processing.enums.PaymentStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;

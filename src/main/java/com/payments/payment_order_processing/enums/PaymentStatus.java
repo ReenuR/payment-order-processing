@@ -1,4 +1,4 @@
-package enums;
+package com.payments.payment_order_processing.enums;
 
 public enum PaymentStatus {
     ORDER_CREATED("Order has been created"),

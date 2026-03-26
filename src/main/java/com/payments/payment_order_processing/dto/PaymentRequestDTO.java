@@ -1,6 +1,6 @@
-package dto;
+package com.payments.payment_order_processing.dto;
 
-import enums.PaymentType;
+import com.payments.payment_order_processing.enums.PaymentType;
 import lombok.Data;
 
 import java.math.BigDecimal;

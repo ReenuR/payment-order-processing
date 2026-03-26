@@ -1,6 +1,6 @@
-package repository;
+package com.payments.payment_order_processing.repository;
 
-import entity.PaymentOrder;
+import com.payments.payment_order_processing.entity.PaymentOrder;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
