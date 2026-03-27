@@ -10,9 +10,9 @@ import java.util.UUID;
 public class PaymentResponseDTO {
     private UUID orderId;
     private UUID customerId;
-    private UUID paymentID;
+    private UUID paymentId;
     private PaymentStatus paymentStatus;
-    private UUID transactionId;
+    private String transactionId;
     private LocalDateTime createdAt;
     private String failureReason;
 }

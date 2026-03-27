@@ -19,7 +19,7 @@ public class PaymentOrder {
     private UUID orderId;
 
     private UUID customerId;
-    private UUID transactionId;
+    private String transactionId;
 
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
