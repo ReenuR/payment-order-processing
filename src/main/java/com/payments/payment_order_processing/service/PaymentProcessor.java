@@ -1,11 +1,11 @@
 package com.payments.payment_order_processing.service;
 
 import com.payments.payment_order_processing.client.StripeClient;
-import com.payments.payment_order_processing.entity.PaymentOrder;
+import com.payments.payment_order_processing.entity.Payment;
 import com.payments.payment_order_processing.enums.PaymentStatus;
 import com.payments.payment_order_processing.exception.PaymentDeclinedException;
 import com.payments.payment_order_processing.exception.PaymentProcessingException;
-import com.payments.payment_order_processing.repository.PaymentOrderRepository;
+import com.payments.payment_order_processing.repository.PaymentRepository;
 import com.stripe.exception.CardException;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
@@ -21,11 +21,11 @@ import java.time.LocalDateTime;
 @Slf4j
 public class PaymentProcessor {
 
-    private final PaymentOrderRepository paymentOrderRepository;
+    private final PaymentRepository paymentRepository;
     private final StripeClient stripeClient;
 
-    public PaymentProcessor(PaymentOrderRepository paymentOrderRepository, StripeClient stripeClient){
-        this.paymentOrderRepository = paymentOrderRepository;
+    public PaymentProcessor(PaymentRepository paymentRepository, StripeClient stripeClient){
+        this.paymentRepository = paymentRepository;
         this.stripeClient = stripeClient;
     }
 
@@ -35,14 +35,14 @@ public class PaymentProcessor {
             maxAttempts = 3,
             backoff = @Backoff(delay = 2000, multiplier = 2)
     )
-    public void initiatePayment(PaymentOrder paymentOrder) {
-        log.info("Initiating payment for orderId: {}", paymentOrder.getOrderId());
-        paymentOrder.setPaymentStatus(PaymentStatus.PAYMENT_INITIATED);
-        paymentOrder.setUpdatedAt(LocalDateTime.now());
-        paymentOrderRepository.save(paymentOrder);
+    public void initiatePayment(Payment payment) {
+        log.info("Initiating payment for orderId: {}", payment.getOrderId());
+        payment.setPaymentStatus(PaymentStatus.PAYMENT_INITIATED);
+        payment.setUpdatedAt(LocalDateTime.now());
+        paymentRepository.save(payment);
         PaymentIntent paymentIntent;
         try {
-            paymentIntent = stripeClient.chargePayment(paymentOrder.getPaymentAmount(), paymentOrder.getCurrency(), paymentOrder.getPaymentType());
+            paymentIntent = stripeClient.chargePayment(payment.getPaymentAmount(), payment.getCurrency(), payment.getPaymentType());
         } catch (CardException e) {
             // permanent failure - card declined
             throw new PaymentDeclinedException("Card declined: " + e.getMessage());
@@ -52,27 +52,27 @@ public class PaymentProcessor {
         }
 
         if ("succeeded".equals(paymentIntent.getStatus())) {
-            log.info("Payment succeeded for orderId: {}", paymentOrder.getOrderId());
-            paymentOrder.setPaymentStatus(PaymentStatus.PAYMENT_SUCCESS);
-            paymentOrder.setTransactionId(paymentIntent.getId());
-            paymentOrder.setUpdatedAt(LocalDateTime.now());
-            paymentOrderRepository.save(paymentOrder);
+            log.info("Payment succeeded for orderId: {}", payment.getOrderId());
+            payment.setPaymentStatus(PaymentStatus.PAYMENT_SUCCESS);
+            payment.setTransactionId(paymentIntent.getId());
+            payment.setUpdatedAt(LocalDateTime.now());
+            paymentRepository.save(payment);
         } else {
-            log.error("Payment failed for orderId: {}", paymentOrder.getOrderId());
-            paymentOrder.setPaymentStatus(PaymentStatus.PAYMENT_FAILED);
-            paymentOrder.setUpdatedAt(LocalDateTime.now());
-            paymentOrderRepository.save(paymentOrder);
+            log.error("Payment failed for orderId: {}", payment.getOrderId());
+            payment.setPaymentStatus(PaymentStatus.PAYMENT_FAILED);
+            payment.setUpdatedAt(LocalDateTime.now());
+            paymentRepository.save(payment);
         }
 
     }
 
     @Recover
-    public void recover(PaymentProcessingException e, PaymentOrder paymentOrder) {
+    public void recover(PaymentProcessingException e, Payment payment) {
         log.error("All retries exhausted for orderId: {}. Reason: {}",
-                paymentOrder.getOrderId(), e.getMessage());
-        paymentOrder.setPaymentStatus(PaymentStatus.PAYMENT_FAILED);
-        paymentOrder.setUpdatedAt(LocalDateTime.now());
-        paymentOrderRepository.save(paymentOrder);
+                payment.getOrderId(), e.getMessage());
+        payment.setPaymentStatus(PaymentStatus.PAYMENT_FAILED);
+        payment.setUpdatedAt(LocalDateTime.now());
+        paymentRepository.save(payment);
 
     }
 
