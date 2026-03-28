@@ -1,6 +1,5 @@
 package com.payments.payment_order_processing.client;
 
-import com.payments.payment_order_processing.enums.PaymentType;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
@@ -21,13 +20,19 @@ public class StripeClient {
     public void init() {
         Stripe.apiKey = stripeAPIKey;
     }
-    public PaymentIntent chargePayment(BigDecimal amount, String currency, PaymentType paymentMethod) throws StripeException {
+    public PaymentIntent chargePayment(BigDecimal amount, String currency, String paymentMethodId) throws StripeException {
 
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                 .setAmount(amount.multiply(BigDecimal.valueOf(100)).longValue()) // Stripe uses cents
                 .setCurrency(currency.toLowerCase())
-                .setPaymentMethod(paymentMethod.name())
-                .setConfirm(true) // charge immediately
+                .setPaymentMethod(paymentMethodId)
+                .setConfirm(true)
+                .setAutomaticPaymentMethods(
+                        PaymentIntentCreateParams.AutomaticPaymentMethods.builder()
+                                .setEnabled(true)
+                                .setAllowRedirects(PaymentIntentCreateParams.AutomaticPaymentMethods.AllowRedirects.NEVER)
+                                .build()
+                )
                 .build();
 
         return PaymentIntent.create(params);

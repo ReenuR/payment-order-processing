@@ -52,6 +52,7 @@ public class PaymentService {
         payment.setOrderId(paymentRequestDTO.getOrderId());
         payment.setRetryCount(0);
         payment.setCustomerId(paymentRequestDTO.getCustomerId());
+        payment.setPaymentMethodId(paymentRequestDTO.getPaymentMethodId());
         return payment;
     }
 

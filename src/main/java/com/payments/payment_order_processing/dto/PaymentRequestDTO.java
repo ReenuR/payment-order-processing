@@ -14,4 +14,5 @@ public class PaymentRequestDTO {
     private String currency;
     private BigDecimal paymentAmount;
     private String idempotencyKey;
+    private String paymentMethodId;
 }

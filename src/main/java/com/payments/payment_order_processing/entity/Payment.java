@@ -26,6 +26,8 @@ public class Payment {
 
     @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
+
+    private String paymentMethodId;
     private BigDecimal paymentAmount;
     private String currency;
     private String idempotencyKey;

@@ -42,12 +42,12 @@ public class PaymentProcessor {
         paymentRepository.save(payment);
         PaymentIntent paymentIntent;
         try {
-            paymentIntent = stripeClient.chargePayment(payment.getPaymentAmount(), payment.getCurrency(), payment.getPaymentType());
+            paymentIntent = stripeClient.chargePayment(payment.getPaymentAmount(), payment.getCurrency(), payment.getPaymentMethodId());
         } catch (CardException e) {
-            // permanent failure - card declined
             throw new PaymentDeclinedException("Card declined: " + e.getMessage());
         } catch (StripeException e) {
-            // transient failure - retryable
+            log.error("Stripe call failed for orderId: {}. Error: {}",
+                    payment.getOrderId(), e.getMessage(), e);
             throw new PaymentProcessingException("Payment processing failed", e);
         }
 
@@ -69,7 +69,7 @@ public class PaymentProcessor {
     @Recover
     public void recover(PaymentProcessingException e, Payment payment) {
         log.error("All retries exhausted for orderId: {}. Reason: {}",
-                payment.getOrderId(), e.getMessage());
+                payment.getOrderId(), e.getMessage(), e);
         payment.setPaymentStatus(PaymentStatus.PAYMENT_FAILED);
         payment.setUpdatedAt(LocalDateTime.now());
         paymentRepository.save(payment);
