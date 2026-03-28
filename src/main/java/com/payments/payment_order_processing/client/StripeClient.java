@@ -3,6 +3,7 @@ package com.payments.payment_order_processing.client;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.PaymentIntent;
+import com.stripe.net.RequestOptions;
 import com.stripe.param.PaymentIntentCreateParams;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,7 +21,8 @@ public class StripeClient {
     public void init() {
         Stripe.apiKey = stripeAPIKey;
     }
-    public PaymentIntent chargePayment(BigDecimal amount, String currency, String paymentMethodId) throws StripeException {
+    public PaymentIntent chargePayment(BigDecimal amount, String currency, String paymentMethodId,
+                                       String idempotencyKey) throws StripeException {
 
         PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
                 .setAmount(amount.multiply(BigDecimal.valueOf(100)).longValue()) // Stripe uses cents
@@ -35,7 +37,10 @@ public class StripeClient {
                 )
                 .build();
 
-        return PaymentIntent.create(params);
+        RequestOptions requestOptions = RequestOptions.builder()
+                .setIdempotencyKey(idempotencyKey)
+                .build();
+        return PaymentIntent.create(params, requestOptions);
 
     }
 

@@ -47,7 +47,8 @@
             paymentRepository.save(payment);
             PaymentIntent paymentIntent;
             try {
-                paymentIntent = stripeClient.chargePayment(payment.getPaymentAmount(), payment.getCurrency(), payment.getPaymentMethodId());
+                paymentIntent = stripeClient.chargePayment(payment.getPaymentAmount(), payment.getCurrency(),
+                        payment.getPaymentMethodId(),payment.getIdempotencyKey());
             } catch (CardException e) {
                 throw new PaymentDeclinedException("Card declined: " + e.getMessage());
             } catch (StripeException e) {

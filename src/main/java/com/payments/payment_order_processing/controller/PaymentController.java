@@ -2,6 +2,7 @@ package com.payments.payment_order_processing.controller;
 
 import com.payments.payment_order_processing.dto.PaymentRequestDTO;
 import com.payments.payment_order_processing.dto.PaymentResponseDTO;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
     @PostMapping("/orders/pay")
-    public ResponseEntity<PaymentResponseDTO> processPayment(@RequestBody PaymentRequestDTO paymentRequestDTO){
+    public ResponseEntity<PaymentResponseDTO> processPayment(@Valid @RequestBody PaymentRequestDTO paymentRequestDTO){
         PaymentResponseDTO responseDTO= paymentService.processPayment(paymentRequestDTO);
         return ResponseEntity.accepted().body(responseDTO);
     }
